@@ -1,0 +1,63 @@
+#Read, Understand, structure and summarize the sample dataset
+#Basic Exploratory data analysis
+#Outlier removal using IQR
+
+import os
+import pathlib
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("C:/Users/DELL/Documents/2 SEM/DataS/mpg_raw.csv"
+
+# Identify the dimension of dataset
+df.shape
+
+# Identify the summary of dataset
+df.describe()
+
+# Identify the structure of dataset
+df.info()
+
+# To find the null values
+df.isna().sum()
+
+# To drop null values
+df.dropna()
+
+# To plot the histogram
+df.hist(["displacement"])
+
+# Recognize the outliners using box plot
+plt.boxplot(df['mpg'])
+
+# Create box plot for outliner treatment
+Q1 = df['mpg'].quantile(0.25)
+Q3 = df['mpg'].quantile(0.75)
+IQR = Q3-Q1
+print(Q1)
+print(Q3)
+print(IQR)
+lower = Q1 - (1.5 * IQR)
+upper = Q3 + (1.5 * IQR)
+print(lower, upper)
+
+df = df[(df['mpg'] >= lower) & (df['mpg'] <= upper)]
+plt.boxplot(df['mpg'])
+
+# Draw volin plot
+sns.violinplot(data = df, x='mpg')
+
+# Standardise the contionous variable
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+con = df.select_dtypes(include=["int64", "float64"]).columns
+standard = scaler.fit_transform(df[con])
+print(standard)
+
+scales = ['mpg', 'cylinders', 'displacement', 'horsepower', 'weight', 'acceleration', 'model_year', 'origin', 'name']
+for i in scales:
+    plt.hist(df[i])
+    plt.show()
+
