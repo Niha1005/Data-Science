@@ -1,0 +1,71 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+
+Load the dataset
+df.head()
+df.info()
+df.describe()
+df.isnull().sum()
+
+df['radius_mean'] = df['radius_mean'].fillna(df['radius_mean'].mean())
+df['texture_mean'] = df['texture_mean'].fillna(df['texture_mean'].mean())
+
+x = df[['texture_mean', 'radius_mean']]
+x
+y =df['diagnosis']
+y
+
+x.shape
+y.shape
+
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.20, random_state = 42)
+
+from sklearn.neighbors import KNeighborsClassifier
+knn = KNeighborsClassifier(n_neighbors = 6)
+
+knn.fit(x_train, y_train)
+knn.score(x_test, y_test)
+
+y_train_prediction = knn.predict(x_train)
+y_train_prediction
+
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import precision_score, recall_score, f1_score
+
+classnames = ['0', '1']
+confusionmatrix = confusion_matrix(y_train, y_train_prediction)
+
+sns.heatmap(confusionmatrix, annot = True, yticklabels = classnames, xticklabels = classnames, fmt = 'g', cmap = "Greens")
+
+from sklearn import metrics
+print("Accuracy: ", metrics.accuracy_score(y_train, y_train_prediction))
+
+
+from sklearn.neighbors import KNeighborsClassifier
+num = [11, 12, 7, 5, 3]
+arc_list = []
+for i in num:
+    knn = KNeighborsClassifier(n_neighbors = i)
+    knn.fit(x_train, y_train)
+    ac = knn.score(x_test, y_test)
+    arc_list.append(ac)
+    classnames = ['0', '1']
+    confusionmatrix = confusion_matrix(y_train, y_train_prediction)
+    sns.heatmap(confusionmatrix, annot = True, yticklabels = classnames, xticklabels = classnames, fmt = 'g', cmap = "Blues")
+print(arc_list)
+
+sns.lineplot(arc_list)
+
+new_data = np.array([[12.0, 25.0]])
+result = knn.predict(new_data)
+if result == 'M':
+    print("Result :", result)
+    print("Dianosis : Malignant")
+else:
+    print("Result :", result)
+    print("Dignosis : Benign")
+
